@@ -23,6 +23,7 @@ This guide summarizes a clean and consistent Git workflow suitable for both solo
 - [Extras (Optional but Recommended)](#extras-optional-but-recommended-top-)
 - [Summary Cheat Sheet](#summary-cheat-sheet-top-)
   - [Alternative flow with develop branch (team projects, GitFlow-like)](#alternative-flow-with-develop-branch-team-projects-gitflow-like)
+  - ⭐️ [Alternative flow with Pull Requests & Protected Branches (professional workflow))](#alternative-flow-with-pull-requests--protected-branches-professional-workflow-top-)
 
 
 ## 1. Start a New Feature or Task [top ↑](#)
@@ -297,5 +298,79 @@ git merge develop
 git tag -a v1.1.0 -m "Release: feature X completed"
 git push origin main
 git push origin v1.1.0
+```
 
+---
+
+## Alternative flow with Pull Requests & Protected Branches (professional workflow) [top ↑](#)
+
+In collaborative or production-like environments, branches such as `main` and `develop` are often protected, meaning you cannot push to them directly.
+All changes must go through Pull Requests (PRs) to ensure review, CI checks, and a clean commit history.
+
+### Branch workflow
+```bash
+# Start from develop
+git checkout develop
+git pull --rebase origin develop
+
+# Create a feature branch
+git checkout -b feat/some-feature
+
+# Work on the feature
+git add -p
+git commit -m "feat(scope): implement X"
+
+# (Optional) Clean up commit history
+git rebase -i HEAD~N
+
+# Push the feature branch
+git push origin feat/some-feature
+
+# If you rebased before pushing:
+git push --force-with-lease
+````
+
+### Opening the Pull Request
+
+- Open a PR targeting `develop` (not main).
+- Use clear, conventional-commit titles:
+  - feat(api): add new stock endpoint
+  - fix(auth): correct login cookie
+  - docs(contributing): update PR workflow
+- Keep PRs focused and small.
+- Resolve all comments before merging.
+- Use Squash & Merge to keep history clean.
+
+### After the PR is merged
+```bash
+# Update local develop
+git checkout develop
+git pull origin develop
+
+# Delete local branch
+git branch -d feat/some-feature
+
+# Delete remote branch
+git push origin --delete feat/some-feature
+```
+
+### Release workflow (protected main branch)
+```bash
+# Update local develop
+git checkout develop
+git pull origin develop
+
+# Create a release branch
+git checkout -b release/v1.2.0
+git push origin release/v1.2.0
+
+# Open a PR → main
+
+# After merging:
+git checkout main
+git pull origin main
+
+# Tag release
+git tag -a v1.2.0 -m "Release: version 1.2.0"
+git push origin v1.2.0
 ```
