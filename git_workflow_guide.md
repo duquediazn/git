@@ -334,10 +334,17 @@ git fetch origin
 git rebase origin/develop
 ```
 
+(Optional) Rebase to clean history:
+```bash
+git rebase -i HEAD~N
+```
+
 If you rebased, update your branch safely:
 ```bash
 git push --force-with-lease
 ```
+
+> --force-with-lease is safer than --force — it only pushes if no one else has updated the branch since your last pull, protecting shared work.
 
 ### Opening the Pull Request
 
