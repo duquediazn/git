@@ -307,28 +307,37 @@ git push origin v1.1.0
 In collaborative or production-like environments, branches such as `main` and `develop` are often protected, meaning you cannot push to them directly.
 All changes must go through Pull Requests (PRs) to ensure review, CI checks, and a clean commit history.
 
-### Branch workflow
+### Branch workflow (professional protected-branch setup)
 ```bash
-# Start from develop
+# Always start from an up-to-date develop
 git checkout develop
 git pull --rebase origin develop
 
-# Create a feature branch
+# Create your feature branch
 git checkout -b feat/some-feature
+```
 
-# Work on the feature
+> Using --rebase avoids unnecessary merge commits and keeps the history linear and easier to read during code review.
+
+Work on your feature:
+```bash
 git add -p
 git commit -m "feat(scope): implement X"
+```
 
-# (Optional) Clean up commit history
-git rebase -i HEAD~N
+Keep your branch updated while working:
+```bash
+# Fetch new changes from develop
+git fetch origin
 
-# Push the feature branch
-git push origin feat/some-feature
+# Reapply your work on top of the latest develop
+git rebase origin/develop
+```
 
-# If you rebased before pushing:
+If you rebased, update your branch safely:
+```bash
 git push --force-with-lease
-````
+```
 
 ### Opening the Pull Request
 
